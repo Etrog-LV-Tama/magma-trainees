@@ -1,0 +1,36 @@
+// רשימת חניכים - מחזור ל"ו, מגמת תמ"א
+// מקור: טבלת אקסל (תמונה) שהתקבלה 11.10.2026
+const UPDATED = "11.10.2026";
+
+const TRAINEES = [
+  {first:"יובל",      last:"רייס",        gender:"ז", candidate:"1124748", id:"330618000", city:"ירושלים",             phone:"556840206", date:"22.09.2026"},
+  {first:"איתי",      last:"בוליצ׳בסקי",  gender:"ז", candidate:"1141390", id:"331407197", city:"בת ים",               phone:"546333790", date:"22.09.2026"},
+  {first:"אורי",      last:"קוסטר",       gender:"ז", candidate:"1211111", id:"332173723", city:"מב״ל העמק",           phone:"548767578", date:"22.09.2026"},
+  {first:"אמיתי יעקב",last:"ג׳אן",        gender:"ז", candidate:"9388885", id:"327652061", city:"חשמונאים",            phone:"533342250", date:"22.09.2026"},
+  {first:"ניר",       last:"שפירא",       gender:"ז", candidate:"9829367", id:"330577156", city:"גבעה",                phone:"549090029", date:"22.09.2026"},
+  {first:"עילי שמחה", last:"הרץ",         gender:"ז", candidate:"9845360", id:"330828674", city:"רקפת",                phone:"542952555", date:"22.09.2026"},
+  {first:"נבו",       last:"אבירם",       gender:"ז", candidate:"9848724", id:"330851999", city:"באר אורה",            phone:"546339085", date:"22.09.2026"},
+  {first:"עידן",      last:"פורטל",       gender:"ז", candidate:"9848949", id:"330853292", city:"אילת",                phone:"532401041", date:"22.09.2026"},
+  {first:"יובל",      last:"שוורץ",       gender:"ז", candidate:"9856288", id:"330910480", city:"הר אדר",              phone:"584703020", date:"22.09.2026"},
+  {first:"איתי",      last:"טורחאנסקי",   gender:"ז", candidate:"9902848", id:"331635441", city:"כפר אוריה",           phone:"526162609", date:"22.09.2026"},
+  {first:"אנאל שרה",  last:"אלזום",       gender:"נ", candidate:"9845060", id:"330826710", city:"מודיעין מכבים רעות",  phone:"584468091", date:"22.09.2026"},
+  {first:"ערנה",      last:"נוקד",        gender:"נ", candidate:"9878816", id:"331098533", city:"גבע",                 phone:"502386825", date:"22.09.2026"},
+  {first:"קירה",      last:"בנוביץ",      gender:"נ", candidate:"9922515", id:"332671056", city:"ירושלים",             phone:"546945135", date:"22.09.2026"},
+  {first:"איב",       last:"שם טוב",      gender:"נ", candidate:"9519159", id:"216128603", city:"ירושלים",             phone:"535309941", date:"22.09.2026"},
+  {first:"נעם",       last:"ערמון",       gender:"נ", candidate:"9527426", id:"216257113", city:"נס הרים",             phone:"515600412", date:"22.09.2026"},
+  {first:"הילה טורונש",last:"אייטנב",     gender:"נ", candidate:"9644178", id:"330593237", city:"רמלה",                phone:"534291806", date:"22.09.2026"},
+  {first:"זיו",       last:"יגב",         gender:"נ", candidate:"9678549", id:"331058701", city:"עין הבשור",           phone:"542503193", date:"22.09.2026"},
+  {first:"רומי",      last:"מסינג-גיא",   gender:"נ", candidate:"9684377", id:"209898014", city:"קרית טבעון",          phone:"507147003", date:"22.09.2026"},
+  {first:"נועה",      last:"גבעול",       gender:"נ", candidate:"9738025", id:"216760769", city:"כפר סבא",             phone:"543307722", date:"22.09.2026"},
+  {first:"נעמה",      last:"קולומבוס",    gender:"נ", candidate:"9761228", id:"216949552", city:"חוצים",               phone:"525014834", date:"22.09.2026"},
+  {first:"ליה",       last:"יפה",         gender:"נ", candidate:"9765324", id:"217011469", city:"מזכרת בתיה",          phone:"532554655", date:"22.09.2026"},
+  {first:"אלישבע סול",last:"סגל",         gender:"נ", candidate:"9773291", id:"217100726", city:"ירושלים",             phone:"528130610", date:"22.09.2026"},
+  {first:"טגסט פריאל",last:"סולומון",     gender:"נ", candidate:"9792016", id:"217371053", city:"מודיעין מכבים רעות",  phone:"549876592", date:"22.09.2026"},
+  {first:"תמר",       last:"בר סלע",      gender:"נ", candidate:"9803543", id:"326460888", city:"גני תקווה",           phone:"585351890", date:"22.09.2026"},
+  {first:"עדי מגדה",  last:"שוראקי",      gender:"נ", candidate:"9845101", id:"330827064", city:"ירושלים",             phone:"538666029", date:"22.09.2026"},
+  {first:"עדי",       last:"מעוז",        gender:"נ", candidate:"9848737", id:"330852120", city:"אילת",                phone:"532414134", date:"22.09.2026"},
+  {first:"אראל",      last:"לפלר",        gender:"נ", candidate:"9849539", id:"330860479", city:"רמת השרון",           phone:"542989199", date:"22.09.2026"},
+  {first:"אורי",      last:"קושל",        gender:"נ", candidate:"",        id:"217740802", city:"",                    phone:"0504408889",date:"18.10.2026", labels:[{t:"שיבוץ להחלטתנו",c:"green"},{t:"מתנדבים",c:"blue"}]},
+  {first:"מאיר",      last:"ווקנין",      gender:"ז", candidate:"",        id:"329093785", city:"",                    phone:"0542205572",date:"18.10.2026", labels:[{t:"זיצ״מ-57",c:"green"},{t:"מתנדבים",c:"blue"}]},
+  {first:"איתי ישראל",last:"הר שושנים",   gender:"ז", candidate:"",        id:"329213177", city:"",                    phone:"0539281202",date:"18.10.2026", labels:[{t:"זיצ״מ-55",c:"green"},{t:"מתנדבים",c:"blue"}]}
+];
