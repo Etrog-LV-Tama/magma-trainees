@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>חניכי מחזור ל״ו · תמ״א</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  html { font-family:'Rubik',-apple-system,'Segoe UI',Arial,sans-serif; }
+  body {
+    min-height:100vh;
+    background: linear-gradient(160deg,#fdf2f8 0%,#eff6ff 30%,#ecfdf5 62%,#fffbeb 100%);
+    background-attachment: fixed;
+    color:#1e293b;
+    padding: calc(20px + env(safe-area-inset-top)) 14px calc(34px + env(safe-area-inset-bottom));
+  }
+  .wrap { max-width:1180px; margin:0 auto; }
+  .card {
+    background: rgba(255,255,255,.62);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border: 1px solid rgba(255,255,255,.85);
+    border-radius: 26px;
+    box-shadow: 0 10px 34px rgba(100,116,180,.13);
+    padding: 20px 18px;
+    margin-bottom: 16px;
+  }
+  header.card { text-align:center; padding:26px 18px 22px; }
+  h1 { font-size:30px; font-weight:800; letter-spacing:-.3px;
+       background: linear-gradient(90deg,#be185d,#6d28d9,#0369a1);
+       -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .sub { margin-top:6px; font-size:14px; color:#64748b; font-weight:500; }
+  h2 { font-size:17px; font-weight:700; color:#334155; margin-bottom:12px; display:flex; align-items:center; gap:8px; }
+  h2 .dot { width:9px; height:9px; border-radius:50%; flex:none; }
+
+  /* stats */
+  .stats { display:flex; flex-wrap:wrap; gap:10px; }
+  .stat { flex:1 1 140px; background:rgba(255,255,255,.7); border:1px solid rgba(255,255,255,.9);
+          border-radius:18px; padding:12px 14px; text-align:center; }
+  .stat b { display:block; font-size:24px; font-weight:800; }
+  .stat span { font-size:12.5px; color:#64748b; font-weight:600; }
+  .s1 b{color:#be185d}.s2 b{color:#0369a1}.s3 b{color:#6d28d9}.s4 b{color:#0f766e}.s5 b{color:#c2410c}
+
+  /* controls */
+  .controls { display:flex; flex-wrap:wrap; gap:8px; align-items:center; }
+  .fchip { border:none; cursor:pointer; border-radius:999px; padding:7px 16px; font-family:inherit;
+           font-size:14px; font-weight:700; background:rgba(148,163,184,.16); color:#475569; }
+  .fchip.on { background:#1e293b; color:#fff; }
+  #q { flex:1; min-width:150px; border:1px solid rgba(148,163,184,.4); border-radius:999px;
+       padding:8px 16px; font-family:inherit; font-size:14px; background:rgba(255,255,255,.8); color:#1e293b; }
+  #q:focus { outline:2px solid #6d28d9; border-color:transparent; }
+  .cnt { font-size:12.5px; color:#64748b; font-weight:600; margin-top:8px; }
+
+  /* table (desktop) */
+  .tblwrap { overflow-x:auto; border-radius:18px; border:1px solid rgba(148,163,184,.25); background:rgba(255,255,255,.55); }
+  table { border-collapse:collapse; width:100%; font-size:13px; }
+  th,td { padding:8px 10px; text-align:right; white-space:nowrap; }
+  thead th { position:sticky; top:0; background:#1e293b; color:#fff; font-size:12px; font-weight:700; z-index:1; }
+  tbody tr + tr td { border-top:1px solid rgba(148,163,184,.18); }
+  tbody tr:hover { background:rgba(109,40,217,.06); }
+  td.num, th.num { direction:ltr; text-align:left; font-variant-numeric:tabular-nums; }
+  .g { display:inline-block; min-width:22px; text-align:center; border-radius:999px; padding:1px 7px; font-size:11.5px; font-weight:700; }
+  .gz { background:#dbeafe; color:#1d4ed8; }
+  .gn { background:#fce7f3; color:#be185d; }
+  .lbl { display:inline-block; border-radius:8px; padding:1px 8px; font-size:11.5px; font-weight:700; margin:1px 2px; }
+  .lbl.green { background:#bbf7d0; color:#166534; }
+  .lbl.blue  { background:#93c5fd; color:#1e3a8a; }
+  .empty { color:#cbd5e1; }
+
+  /* cards (mobile) */
+  .cards { display:none; }
+  .tcard { background:rgba(255,255,255,.72); border:1px solid rgba(255,255,255,.9); border-radius:18px; padding:13px 15px; margin-bottom:10px; }
+  .tcard .nm { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+  .tcard .nm b { font-size:16.5px; font-weight:800; color:#0f172a; }
+  .tcard .grid { display:grid; grid-template-columns:1fr 1fr; gap:5px 14px; margin-top:9px; }
+  .tcard .kv { font-size:12.5px; }
+  .tcard .kv span { display:block; color:#94a3b8; font-weight:600; font-size:11px; }
+  .tcard .kv b { font-weight:600; color:#334155; font-variant-numeric:tabular-nums; }
+  .tcard .lbls { margin-top:8px; }
+
+  @media (max-width:860px) {
+    .tblwrap { display:none; }
+    .cards { display:block; }
+    .wrap { max-width:480px; }
+    h1 { font-size:26px; }
+  }
+
+  /* notes section */
+  .notes li { font-size:14px; color:#334155; font-weight:500; margin:9px 0; list-style:none;
+              display:flex; gap:9px; align-items:flex-start; line-height:1.55; }
+  .notes li::before { content:""; flex:none; width:8px; height:8px; border-radius:50%; background:#c2410c; margin-top:7px; }
+  .updated { text-align:center; font-size:12px; color:#94a3b8; margin-top:4px; font-weight:500; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="card">
+    <h1>חניכי מחזור ל״ו</h1>
+    <div class="sub">מגמת תמ״א · כל החניכים, הפרטים והסימונים</div>
+  </header>
+
+  <section class="card">
+    <h2><span class="dot" style="background:#6d28d9"></span>תמונת מצב</h2>
+    <div class="stats" id="stats"></div>
+  </section>
+
+  <section class="card">
+    <h2><span class="dot" style="background:#0369a1"></span>רשימת החניכים</h2>
+    <div class="controls">
+      <button class="fchip on" data-f="all">הכל</button>
+      <button class="fchip" data-f="ז">זכר</button>
+      <button class="fchip" data-f="נ">נקבה</button>
+      <input id="q" type="search" placeholder="חיפוש שם, עיר, טלפון...">
+    </div>
+    <div class="cnt" id="cnt"></div>
+    <div class="tblwrap">
+      <table>
+        <thead><tr>
+          <th>#</th><th>שם פרטי</th><th>שם משפחה</th><th>מין</th>
+          <th class="num">מס׳ מועמד</th><th class="num">ת״ז</th><th>מגמה</th>
+          <th>עיר מגורים</th><th class="num">טלפון</th><th class="num">תאריך גיוס</th><th>הערות</th>
+        </tr></thead>
+        <tbody id="tb"></tbody>
+      </table>
+    </div>
+    <div class="cards" id="cards"></div>
+  </section>
+
+  <section class="card">
+    <h2><span class="dot" style="background:#0f766e"></span>סימונים והערות מהטבלה</h2>
+    <ul class="notes" id="notes"></ul>
+  </section>
+
+  <div class="updated" id="upd"></div>
+</div>
+
+<script src="data.js"></script>
+<script>
+(function(){
+  const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const fmtPhone = p => p.length===9 ? '0'+p.slice(0,2)+'-'+p.slice(2) : (p.length===10 ? p.slice(0,3)+'-'+p.slice(3) : p);
+  const cell = v => v ? esc(v) : '<span class="empty">—</span>';
+  const lbls = t => (t.labels||[]).map(l=>`<span class="lbl ${l.c}">${esc(l.t)}</span>`).join('');
+
+  // stats
+  const z = TRAINEES.filter(t=>t.gender==='ז').length, n = TRAINEES.length - z;
+  const d1 = TRAINEES.filter(t=>t.date==='22.09.2026').length, d2 = TRAINEES.length - d1;
+  document.getElementById('stats').innerHTML =
+    `<div class="stat s1"><b>${TRAINEES.length}</b><span>חניכים</span></div>`+
+    `<div class="stat s2"><b>${z}</b><span>זכר</span></div>`+
+    `<div class="stat s3"><b>${n}</b><span>נקבה</span></div>`+
+    `<div class="stat s4"><b>${d1}</b><span>גיוס 22.09.2026</span></div>`+
+    `<div class="stat s5"><b>${d2}</b><span>גיוס 18.10.2026</span></div>`;
+
+  let filter='all', q='';
+  function render(){
+    const rows = TRAINEES.map((t,i)=>({t,i})).filter(({t})=>{
+      if(filter!=='all' && t.gender!==filter) return false;
+      if(q){
+        const hay=(t.first+' '+t.last+' '+t.city+' '+t.phone+' '+t.candidate+' '+t.id).toLowerCase();
+        if(!hay.includes(q)) return false;
+      }
+      return true;
+    });
+    document.getElementById('cnt').textContent = `מציג ${rows.length} מתוך ${TRAINEES.length}`;
+    document.getElementById('tb').innerHTML = rows.map(({t,i})=>`<tr>
+      <td>${i+1}</td><td>${esc(t.first)}</td><td>${esc(t.last)}</td>
+      <td><span class="g ${t.gender==='ז'?'gz':'gn'}">${t.gender}</span></td>
+      <td class="num">${cell(t.candidate)}</td><td class="num">${esc(t.id)}</td><td>תמ״א</td>
+      <td>${cell(t.city)}</td><td class="num">${esc(fmtPhone(t.phone))}</td>
+      <td class="num">${esc(t.date)}</td><td>${lbls(t)||'<span class="empty">—</span>'}</td>
+    </tr>`).join('');
+    document.getElementById('cards').innerHTML = rows.map(({t,i})=>`<div class="tcard">
+      <div class="nm"><b>${esc(t.first)} ${esc(t.last)}</b>
+        <span class="g ${t.gender==='ז'?'gz':'gn'}">${t.gender==='ז'?'זכר':'נקבה'}</span>
+        <span style="font-size:11.5px;color:#94a3b8;font-weight:600">#${i+1}</span></div>
+      <div class="grid">
+        <div class="kv"><span>מס׳ מועמד</span><b>${t.candidate?esc(t.candidate):'—'}</b></div>
+        <div class="kv"><span>ת״ז</span><b>${esc(t.id)}</b></div>
+        <div class="kv"><span>מגמה</span><b>תמ״א</b></div>
+        <div class="kv"><span>עיר</span><b>${t.city?esc(t.city):'—'}</b></div>
+        <div class="kv"><span>טלפון</span><b>${esc(fmtPhone(t.phone))}</b></div>
+        <div class="kv"><span>תאריך גיוס</span><b>${esc(t.date)}</b></div>
+      </div>
+      ${t.labels?`<div class="lbls">${lbls(t)}</div>`:''}
+    </div>`).join('');
+  }
+  document.querySelectorAll('.fchip').forEach(b=>b.addEventListener('click',()=>{
+    document.querySelectorAll('.fchip').forEach(x=>x.classList.remove('on'));
+    b.classList.add('on'); filter=b.dataset.f; render();
+  }));
+  document.getElementById('q').addEventListener('input',e=>{ q=e.target.value.trim().toLowerCase(); render(); });
+
+  // notes
+  const notes = [];
+  const withLbl = c => TRAINEES.filter(t=>(t.labels||[]).some(l=>l.c===c));
+  const vol = TRAINEES.filter(t=>(t.labels||[]).some(l=>l.t==='מתנדבים')).map(t=>`${t.first} ${t.last}`);
+  notes.push(`<b>מתנדבים</b> (סימון כחול): ${vol.join(' · ')}`);
+  notes.push(`<b>שיבוץ להחלטתנו</b> (סימון ירוק): אורי קושל`);
+  notes.push(`<b>זיצ״מ-57</b> (סימון ירוק): מאיר ווקנין`);
+  notes.push(`<b>זיצ״מ-55</b> (סימון ירוק): איתי ישראל הר שושנים`);
+  notes.push(`שלושת המסומנים מתגייסים ב־18.10.2026 (ולא ב־22.09.2026 כמו שאר המחזור), ולכן חסרים להם מספר מועמד ועיר מגורים בטבלת המקור.`);
+  document.getElementById('notes').innerHTML = notes.map(x=>`<li>${x}</li>`).join('');
+
+  document.getElementById('upd').textContent = 'עודכן לאחרונה: ' + UPDATED;
+  render();
+})();
+</script>
+</body>
+</html>
