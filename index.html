@@ -88,10 +88,6 @@
     h1 { font-size:26px; }
   }
 
-  /* notes section */
-  .notes li { font-size:14px; color:#334155; font-weight:500; margin:9px 0; list-style:none;
-              display:flex; gap:9px; align-items:flex-start; line-height:1.55; }
-  .notes li::before { content:""; flex:none; width:8px; height:8px; border-radius:50%; background:#c2410c; margin-top:7px; }
   .updated { text-align:center; font-size:12px; color:#94a3b8; margin-top:4px; font-weight:500; }
 </style>
 </head>
@@ -100,7 +96,7 @@
 
   <header class="card">
     <h1>חניכי מחזור ל״ו</h1>
-    <div class="sub">מגמת תמ״א · כל החניכים, הפרטים והסימונים</div>
+    <div class="sub">מגמת תמ״א · כל החניכים והפרטים</div>
   </header>
 
   <section class="card">
@@ -130,11 +126,6 @@
     <div class="cards" id="cards"></div>
   </section>
 
-  <section class="card">
-    <h2><span class="dot" style="background:#0f766e"></span>סימונים והערות מהטבלה</h2>
-    <ul class="notes" id="notes"></ul>
-  </section>
-
   <div class="updated" id="upd"></div>
 </div>
 
@@ -148,13 +139,10 @@
 
   // stats
   const z = TRAINEES.filter(t=>t.gender==='ז').length, n = TRAINEES.length - z;
-  const d1 = TRAINEES.filter(t=>t.date==='22.09.2026').length, d2 = TRAINEES.length - d1;
   document.getElementById('stats').innerHTML =
     `<div class="stat s1"><b>${TRAINEES.length}</b><span>חניכים</span></div>`+
     `<div class="stat s2"><b>${z}</b><span>זכר</span></div>`+
-    `<div class="stat s3"><b>${n}</b><span>נקבה</span></div>`+
-    `<div class="stat s4"><b>${d1}</b><span>גיוס 22.09.2026</span></div>`+
-    `<div class="stat s5"><b>${d2}</b><span>גיוס 18.10.2026</span></div>`;
+    `<div class="stat s3"><b>${n}</b><span>נקבה</span></div>`;
 
   let filter='all', q='';
   function render(){
@@ -194,17 +182,6 @@
     b.classList.add('on'); filter=b.dataset.f; render();
   }));
   document.getElementById('q').addEventListener('input',e=>{ q=e.target.value.trim().toLowerCase(); render(); });
-
-  // notes
-  const notes = [];
-  const withLbl = c => TRAINEES.filter(t=>(t.labels||[]).some(l=>l.c===c));
-  const vol = TRAINEES.filter(t=>(t.labels||[]).some(l=>l.t==='מתנדבים')).map(t=>`${t.first} ${t.last}`);
-  notes.push(`<b>מתנדבים</b> (סימון כחול): ${vol.join(' · ')}`);
-  notes.push(`<b>שיבוץ להחלטתנו</b> (סימון ירוק): אורי קושל`);
-  notes.push(`<b>זיצ״מ-57</b> (סימון ירוק): מאיר ווקנין`);
-  notes.push(`<b>זיצ״מ-55</b> (סימון ירוק): איתי ישראל הר שושנים`);
-  notes.push(`שלושת המסומנים מתגייסים ב־18.10.2026 (ולא ב־22.09.2026 כמו שאר המחזור), ולכן חסרים להם מספר מועמד ועיר מגורים בטבלת המקור.`);
-  document.getElementById('notes').innerHTML = notes.map(x=>`<li>${x}</li>`).join('');
 
   document.getElementById('upd').textContent = 'עודכן לאחרונה: ' + UPDATED;
   render();
