@@ -129,7 +129,7 @@
       <table>
         <thead><tr>
           <th>#</th><th>שם פרטי</th><th>שם משפחה</th><th>מין</th>
-          <th class="num">מס׳ מועמד</th><th class="num">ת״ז</th><th>מגמה</th>
+          <th class="num">מספר אישי</th><th class="num">ת״ז</th><th>מגמה</th>
           <th>עיר מגורים</th><th class="num">טלפון</th><th class="num">תאריך גיוס</th><th>צוות</th><th>הערות</th>
         </tr></thead>
         <tbody id="tb"></tbody>
@@ -183,7 +183,7 @@
         <span class="g ${t.gender==='ז'?'gz':'gn'}">${t.gender==='ז'?'זכר':'נקבה'}</span>
         <span style="font-size:11.5px;color:#94a3b8;font-weight:600">#${i+1}</span></div>
       <div class="grid">
-        <div class="kv"><span>מס׳ מועמד</span><b>${t.candidate?esc(t.candidate):'—'}</b></div>
+        <div class="kv"><span>מספר אישי</span><b>${t.candidate?esc(t.candidate):'—'}</b></div>
         <div class="kv"><span>ת״ז</span><b>${esc(t.id)}</b></div>
         <div class="kv"><span>מגמה</span><b>תמ״א</b></div>
         <div class="kv"><span>עיר</span><b>${t.city?esc(t.city):'—'}</b></div>
