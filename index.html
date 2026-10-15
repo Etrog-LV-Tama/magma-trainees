@@ -88,6 +88,13 @@
     h1 { font-size:26px; }
   }
 
+  .teams { display:grid; grid-template-columns:repeat(auto-fill,minmax(230px,1fr)); gap:10px; }
+  .team { border-radius:18px; padding:12px 14px; border:1px solid rgba(255,255,255,.9); }
+  .team h3 { font-size:16px; font-weight:800; color:#0f172a; display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; }
+  .team h3 span { font-size:12px; font-weight:700; color:#475569; background:rgba(255,255,255,.65); border-radius:999px; padding:1px 9px; }
+  .team div.m { font-size:14px; font-weight:600; color:#1e293b; padding:5px 0; }
+  .team div.m + div.m { border-top:1px solid rgba(15,23,42,.1); }
+  @media (max-width:860px){ .teams { grid-template-columns:1fr 1fr; gap:8px; } .team{padding:10px 11px;} .team div.m{font-size:13px;} }
   .updated { text-align:center; font-size:12px; color:#94a3b8; margin-top:4px; font-weight:500; }
 </style>
 </head>
@@ -105,6 +112,11 @@
   </section>
 
   <section class="card">
+    <h2><span class="dot" style="background:#be185d"></span>חלוקה לצוותים</h2>
+    <div class="teams" id="teams"></div>
+  </section>
+
+  <section class="card">
     <h2><span class="dot" style="background:#0369a1"></span>רשימת החניכים</h2>
     <div class="controls">
       <button class="fchip on" data-f="all">הכל</button>
@@ -118,7 +130,7 @@
         <thead><tr>
           <th>#</th><th>שם פרטי</th><th>שם משפחה</th><th>מין</th>
           <th class="num">מס׳ מועמד</th><th class="num">ת״ז</th><th>מגמה</th>
-          <th>עיר מגורים</th><th class="num">טלפון</th><th class="num">תאריך גיוס</th><th>הערות</th>
+          <th>עיר מגורים</th><th class="num">טלפון</th><th class="num">תאריך גיוס</th><th>צוות</th><th>הערות</th>
         </tr></thead>
         <tbody id="tb"></tbody>
       </table>
@@ -144,12 +156,16 @@
     `<div class="stat s2"><b>${z}</b><span>זכר</span></div>`+
     `<div class="stat s3"><b>${n}</b><span>נקבה</span></div>`;
 
+  const teamOf = {};
+  TEAMS.forEach(T=>T.members.forEach(n=>teamOf[n]=T.cmd));
+  document.getElementById('teams').innerHTML = TEAMS.map(T=>`<div class="team" style="background:${T.color}"><h3>${esc(T.cmd)}<span>${T.members.length}</span></h3>${T.members.map(n=>`<div class="m">${esc(n)}</div>`).join('')}</div>`).join('');
+
   let filter='all', q='';
   function render(){
     const rows = TRAINEES.map((t,i)=>({t,i})).filter(({t})=>{
       if(filter!=='all' && t.gender!==filter) return false;
       if(q){
-        const hay=(t.first+' '+t.last+' '+t.city+' '+t.phone+' '+t.candidate+' '+t.id).toLowerCase();
+        const hay=(t.first+' '+t.last+' '+(teamOf[t.first+' '+t.last]||'')+' '+t.city+' '+t.phone+' '+t.candidate+' '+t.id).toLowerCase();
         if(!hay.includes(q)) return false;
       }
       return true;
@@ -160,7 +176,7 @@
       <td><span class="g ${t.gender==='ז'?'gz':'gn'}">${t.gender}</span></td>
       <td class="num">${cell(t.candidate)}</td><td class="num">${esc(t.id)}</td><td>תמ״א</td>
       <td>${cell(t.city)}</td><td class="num">${esc(fmtPhone(t.phone))}</td>
-      <td class="num">${esc(t.date)}</td><td>${lbls(t)||'<span class="empty">—</span>'}</td>
+      <td class="num">${esc(t.date)}</td><td>${cell(teamOf[t.first+' '+t.last])}</td><td>${lbls(t)||'<span class="empty">—</span>'}</td>
     </tr>`).join('');
     document.getElementById('cards').innerHTML = rows.map(({t,i})=>`<div class="tcard">
       <div class="nm"><b>${esc(t.first)} ${esc(t.last)}</b>
@@ -173,6 +189,7 @@
         <div class="kv"><span>עיר</span><b>${t.city?esc(t.city):'—'}</b></div>
         <div class="kv"><span>טלפון</span><b>${esc(fmtPhone(t.phone))}</b></div>
         <div class="kv"><span>תאריך גיוס</span><b>${esc(t.date)}</b></div>
+        <div class="kv"><span>צוות</span><b>${esc(teamOf[t.first+' '+t.last]||'—')}</b></div>
       </div>
       ${t.labels?`<div class="lbls">${lbls(t)}</div>`:''}
     </div>`).join('');
