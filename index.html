@@ -95,6 +95,24 @@
   .team div.m { font-size:14px; font-weight:600; color:#1e293b; padding:5px 0; }
   .team div.m + div.m { border-top:1px solid rgba(15,23,42,.1); }
   @media (max-width:860px){ .teams { grid-template-columns:1fr 1fr; gap:8px; } .team{padding:10px 11px;} .team div.m{font-size:13px;} }
+  .team { cursor:pointer; -webkit-user-select:none; user-select:none; -webkit-touch-callout:none;
+          touch-action:manipulation; transition:transform .18s ease, box-shadow .18s ease; }
+  .team.pressing { transform:scale(.965); box-shadow:0 4px 16px rgba(100,116,180,.22); }
+  .team.open { grid-column:1 / -1; box-shadow:0 10px 28px rgba(100,116,180,.20); }
+  .team .details { display:grid; grid-template-rows:0fr; transition:grid-template-rows .3s ease; }
+  .team.open .details { grid-template-rows:1fr; }
+  .team .dwrap { overflow:hidden; min-height:0; }
+  .team.open .mlist { display:none; }
+  .dtitle { font-size:11px; font-weight:700; color:#64748b; margin:8px 0 2px; }
+  .dt { background:rgba(255,255,255,.55); border:1px solid rgba(255,255,255,.75); border-radius:14px; padding:9px 12px; margin-top:7px; }
+  .dt .dnm { display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:6px; }
+  .dt .dnm b { font-size:14.5px; font-weight:800; color:#0f172a; }
+  .dgrid { display:grid; grid-template-columns:repeat(auto-fit,minmax(105px,1fr)); gap:4px 14px; }
+  .dgrid .kv { font-size:12.5px; }
+  .dgrid .kv span { display:block; color:#94a3b8; font-weight:600; font-size:11px; }
+  .dgrid .kv b { font-weight:600; color:#334155; font-variant-numeric:tabular-nums; overflow-wrap:anywhere; }
+  .dt .lbls { margin-top:6px; }
+  .lp-hint { font-size:12px; color:#94a3b8; font-weight:500; margin:-6px 0 10px; }
   .updated { text-align:center; font-size:12px; color:#94a3b8; margin-top:4px; font-weight:500; }
 </style>
 </head>
@@ -113,6 +131,7 @@
 
   <section class="card">
     <h2><span class="dot" style="background:#be185d"></span>חלוקה לצוותים</h2>
+    <div class="lp-hint">לחיצה ארוכה על צוות מציגה את פרטי החניכים שלו · לחיצה על צוות פתוח סוגרת אותו</div>
     <div class="teams" id="teams"></div>
   </section>
 
@@ -158,7 +177,58 @@
 
   const teamOf = {};
   TEAMS.forEach(T=>T.members.forEach(n=>teamOf[n]=T.cmd));
-  document.getElementById('teams').innerHTML = TEAMS.map(T=>`<div class="team" style="background:${T.color}"><h3>${esc(T.cmd)}<span>${T.members.length}</span></h3>${T.members.map(n=>`<div class="m">${esc(n)}</div>`).join('')}</div>`).join('');
+  const byName = {};
+  TRAINEES.forEach(t=>byName[t.first+' '+t.last]=t);
+  function detBlock(n){
+    const t = byName[n];
+    if(!t) return '';
+    return `<div class="dt">
+      <div class="dnm"><b>${esc(t.first)} ${esc(t.last)}</b><span class="g ${t.gender==='ז'?'gz':'gn'}">${t.gender==='ז'?'זכר':'נקבה'}</span></div>
+      <div class="dgrid">
+        <div class="kv"><span>מספר אישי</span><b>${t.candidate?esc(t.candidate):'—'}</b></div>
+        <div class="kv"><span>ת״ז</span><b>${esc(t.id)}</b></div>
+        <div class="kv"><span>עיר מגורים</span><b>${t.city?esc(t.city):'—'}</b></div>
+        <div class="kv"><span>טלפון</span><b>${esc(fmtPhone(t.phone))}</b></div>
+        <div class="kv"><span>תאריך גיוס</span><b>${esc(t.date)}</b></div>
+      </div>
+      ${t.labels?`<div class="lbls">${lbls(t)}</div>`:''}
+    </div>`;
+  }
+  document.getElementById('teams').innerHTML = TEAMS.map(T=>`<div class="team" style="background:${T.color}"><h3>${esc(T.cmd)}<span>${T.members.length}</span></h3><div class="mlist">${T.members.map(n=>`<div class="m">${esc(n)}</div>`).join('')}</div><div class="details"><div class="dwrap"><div class="dtitle">פרטי החניכים</div>${T.members.map(detBlock).join('')}</div></div></div>`).join('');
+
+  // long-press (touch/mouse) + force-press (3D Touch / Force Touch) to expand a team's trainee details inline
+  const LP_MS = 480, LP_TOL = 12;
+  function toggleTeam(el){
+    const wasOpen = el.classList.contains('open');
+    document.querySelectorAll('.team.open').forEach(x=>x.classList.remove('open'));
+    if(!wasOpen) el.classList.add('open');
+  }
+  document.querySelectorAll('.team').forEach(el=>{
+    let timer=null, sx=0, sy=0, fired=false, active=false, lastTouch=0;
+    const cancel = ()=>{ clearTimeout(timer); timer=null; el.classList.remove('pressing'); };
+    const fire = ()=>{ if(fired) return; fired=true; cancel(); if(navigator.vibrate) navigator.vibrate(12); toggleTeam(el); };
+    const start = (x,y)=>{ cancel(); fired=false; active=true; sx=x; sy=y;
+      el.classList.add('pressing');
+      timer=setTimeout(fire, LP_MS); };
+    const move = (x,y)=>{ if(!active) return; if(Math.abs(x-sx)>LP_TOL||Math.abs(y-sy)>LP_TOL){ cancel(); active=false; } };
+    const end = ()=>{ cancel(); active=false; lastTouch=Date.now(); };
+    const mouseGuard = ()=>Date.now()-lastTouch<700;
+    el.addEventListener('touchstart', e=>{ lastTouch=Date.now(); const t=e.touches[0]; start(t.clientX,t.clientY); }, {passive:true});
+    el.addEventListener('touchmove', e=>{ const t=e.touches[0]; move(t.clientX,t.clientY);
+      if(active && typeof t.force==='number' && t.force>0.55) fire(); }, {passive:true});
+    el.addEventListener('touchend', end);
+    el.addEventListener('touchcancel', end);
+    el.addEventListener('touchforcechange', e=>{ const t=e.touches&&e.touches[0];
+      if(active && t && typeof t.force==='number' && t.force>0.55) fire(); });
+    el.addEventListener('webkitmouseforcechanged', e=>{ if(e.webkitForce>=2) fire(); });
+    el.addEventListener('mousedown', e=>{ if(mouseGuard()) return; if(e.button===0) start(e.clientX,e.clientY); });
+    el.addEventListener('mousemove', e=>{ if(mouseGuard()) return; move(e.clientX,e.clientY); });
+    el.addEventListener('mouseup', ()=>{ if(mouseGuard()) return; cancel(); active=false; });
+    el.addEventListener('mouseleave', ()=>{ if(mouseGuard()) return; cancel(); active=false; });
+    el.addEventListener('contextmenu', e=>e.preventDefault());
+    el.addEventListener('click', ()=>{ if(fired){ fired=false; return; }
+      if(el.classList.contains('open')) toggleTeam(el); });
+  });
 
   let filter='all', q='';
   function render(){
