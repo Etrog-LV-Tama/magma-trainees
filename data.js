@@ -33,7 +33,7 @@ const TRAINEES = [
   {first:"אורי",      last:"קושל",        gender:"נ", candidate:"",        id:"217740802", city:"",                    phone:"0504408889",date:"18.10.2026", labels:[{t:"שיבוץ להחלטתנו",c:"green"},{t:"מתנדבים",c:"blue"}]},
   {first:"מאיר",      last:"ווקנין",      gender:"ז", candidate:"",        id:"329093785", city:"",                    phone:"0542205572",date:"18.10.2026", labels:[{t:"זיצ״מ-57",c:"green"},{t:"מתנדבים",c:"blue"}]},
   {first:"איתי ישראל",last:"הר שושנים",   gender:"ז", candidate:"",        id:"329213177", city:"",                    phone:"0539281202",date:"18.10.2026", labels:[{t:"זיצ״מ-55",c:"green"},{t:"מתנדבים",c:"blue"}]},
-  {first:"רותם",     last:"פרנקל",       gender:"ז", candidate:"",        id:"217388644", city:"",                    phone:"0586193336",date:"18.10.2026", labels:[{t:"זיצ״מ-55",c:"green"},{t:"מתנדבים",c:"blue"}]}
+  {first:"רותם",     last:"פרנקל",       gender:"ז", candidate:"9795237", id:"217388644", city:"",                    phone:"0586193336",date:"18.10.2026", labels:[{t:"זיצ״מ-55",c:"green"},{t:"מתנדבים",c:"blue"}]}
 ];
 
 const TEAMS = [
