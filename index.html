@@ -4,9 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>חניכי מחזור ל״ו · תמ״א</title>
-<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
-<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
-<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png?v=2">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png?v=2">
+<link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -125,6 +125,11 @@
   .dgrid .kv span { display:block; color:#94a3b8; font-weight:600; font-size:11px; }
   .dgrid .kv b { font-weight:600; color:#334155; font-variant-numeric:tabular-nums; overflow-wrap:anywhere; }
   .dt .lbls { margin-top:6px; }
+
+  .ph { border:none; background:none; font:inherit; font-weight:inherit; color:inherit; cursor:pointer;
+        padding:0; direction:ltr; unicode-bidi:embed; border-radius:6px; }
+  .ph:hover { text-decoration:underline dotted; }
+  .ph.copied { color:#16a34a; font-weight:700; text-decoration:none; }
   .lp-hint { font-size:12px; color:#94a3b8; font-weight:500; margin:-6px 0 10px; }
   .updated { text-align:center; font-size:12px; color:#94a3b8; margin-top:4px; font-weight:500; }
 </style>
@@ -133,8 +138,8 @@
 <div class="wrap">
 
   <header class="card">
-    <a class="logo-link" href="./" aria-label="סמל קורס אתרוג ל״ו · לדף הבית">
-      <img src="logo.png" alt="סמל קורס אתרוג ל״ו">
+    <a class="logo-link" href="https://etrog-lv-tama.github.io/" aria-label="סמל קורס אתרוג ל״ו · לדף הבית של המגמה">
+      <img src="logo.png?v=2" alt="סמל קורס אתרוג ל״ו">
     </a>
     <h1>חניכי מחזור ל״ו</h1>
     <div class="sub">מגמת תמ״א · כל החניכים והפרטים</div>
@@ -181,6 +186,8 @@
 (function(){
   const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const fmtPhone = p => p.length===9 ? '0'+p.slice(0,2)+'-'+p.slice(2) : (p.length===10 ? p.slice(0,3)+'-'+p.slice(3) : p);
+  const rawPhone = p => p.length===9 ? '0'+p : p;
+  const phoneBtn = p => { const f=fmtPhone(p); return `<button type="button" class="ph" data-p="${esc(rawPhone(p))}" data-label="${esc(f)}" title="העתק מספר">${esc(f)}</button>`; };
   const cell = v => v ? esc(v) : '<span class="empty">—</span>';
   const lbls = t => (t.labels||[]).map(l=>`<span class="lbl ${l.c}">${esc(l.t)}</span>`).join('');
 
@@ -204,7 +211,7 @@
         <div class="kv"><span>מספר אישי</span><b>${t.candidate?esc(t.candidate):'—'}</b></div>
         <div class="kv"><span>ת״ז</span><b>${esc(t.id)}</b></div>
         <div class="kv"><span>עיר מגורים</span><b>${t.city?esc(t.city):'—'}</b></div>
-        <div class="kv"><span>טלפון</span><b>${esc(fmtPhone(t.phone))}</b></div>
+        <div class="kv"><span>טלפון</span><b>${phoneBtn(t.phone)}</b></div>
         <div class="kv"><span>תאריך גיוס</span><b>${esc(t.date)}</b></div>
       </div>
       ${t.labels?`<div class="lbls">${lbls(t)}</div>`:''}
@@ -261,7 +268,7 @@
       <td>${i+1}</td><td>${esc(t.first)}</td><td>${esc(t.last)}</td>
       <td><span class="g ${t.gender==='ז'?'gz':'gn'}">${t.gender}</span></td>
       <td class="num">${cell(t.candidate)}</td><td class="num">${esc(t.id)}</td><td>תמ״א</td>
-      <td>${cell(t.city)}</td><td class="num">${esc(fmtPhone(t.phone))}</td>
+      <td>${cell(t.city)}</td><td class="num">${phoneBtn(t.phone)}</td>
       <td class="num">${esc(t.date)}</td><td>${cell(teamOf[t.first+' '+t.last])}</td><td>${lbls(t)||'<span class="empty">—</span>'}</td>
     </tr>`).join('');
     document.getElementById('cards').innerHTML = rows.map(({t,i})=>`<div class="tcard">
@@ -273,7 +280,7 @@
         <div class="kv"><span>ת״ז</span><b>${esc(t.id)}</b></div>
         <div class="kv"><span>מגמה</span><b>תמ״א</b></div>
         <div class="kv"><span>עיר</span><b>${t.city?esc(t.city):'—'}</b></div>
-        <div class="kv"><span>טלפון</span><b>${esc(fmtPhone(t.phone))}</b></div>
+        <div class="kv"><span>טלפון</span><b>${phoneBtn(t.phone)}</b></div>
         <div class="kv"><span>תאריך גיוס</span><b>${esc(t.date)}</b></div>
         <div class="kv"><span>צוות</span><b>${esc(teamOf[t.first+' '+t.last]||'—')}</b></div>
       </div>
@@ -285,6 +292,33 @@
     b.classList.add('on'); filter=b.dataset.f; render();
   }));
   document.getElementById('q').addEventListener('input',e=>{ q=e.target.value.trim().toLowerCase(); render(); });
+
+  // tap a phone number to copy it (with visible feedback); kept clear of the team long-press
+  function phoneCopied(b, ok){
+    b.classList.add('copied');
+    b.textContent = ok ? 'הועתק ✓' : b.dataset.label;
+    setTimeout(()=>{ b.classList.remove('copied'); b.textContent = b.dataset.label; }, 1200);
+  }
+  function copyPhone(b){
+    const num = b.dataset.p;
+    const legacy = () => {
+      const ta = document.createElement('textarea');
+      ta.value = num; ta.style.position='fixed'; ta.style.opacity='0'; ta.style.top='0';
+      document.body.appendChild(ta); ta.focus(); ta.select();
+      let ok=false; try { ok = document.execCommand('copy'); } catch(e) {}
+      ta.remove(); phoneCopied(b, ok);
+    };
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(num).then(()=>phoneCopied(b,true), legacy);
+    } else legacy();
+  }
+  ['click','touchstart','mousedown'].forEach(ev=>
+    document.addEventListener(ev, e=>{
+      const b = e.target.closest && e.target.closest('.ph');
+      if(!b) return;
+      e.stopPropagation();
+      if(ev==='click'){ e.preventDefault(); copyPhone(b); }
+    }, true));
 
   document.getElementById('upd').textContent = 'עודכן לאחרונה: ' + UPDATED;
   render();
